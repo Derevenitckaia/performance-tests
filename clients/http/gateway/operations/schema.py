@@ -24,7 +24,7 @@ class OperationType(StrEnum):
     CASH_WITHDRAWAL = "CASH_WITHDRAWAL"
 
 class OperationSchema(BaseModel):
-    """Schema for a generic operation."""
+    """Data for operation."""
     model_config = ConfigDict(populate_by_name=True)
 
     id: str
@@ -32,9 +32,9 @@ class OperationSchema(BaseModel):
     status: OperationStatus
     amount: float
     card_id: str = Field(alias="cardId")
-    account_id: str = Field(alias="accountId")
+    category: str
     created_at: datetime = Field(alias="createdAt")
-    updated_at: Optional[datetime] = Field(default=None, alias="updatedAt")
+    account_id: str = Field(alias="accountId")
 
 class GetOperationsQuerySchema(BaseModel):
     """Data for get operations."""

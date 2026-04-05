@@ -105,7 +105,7 @@ class OperationsGatewayHTTPClient(HTTPClient):
 
         :param operation_id: Operation ID
         :return response: Schema with operation data."""
-        response = self.get_operations_api(operation_id)
+        response = self.get_operation_api(operation_id)
         return GetOperationResponseSchema.model_validate_json(response.text)
 
     def get_operation_receipt(self, operation_id) -> GetOperationsReceiptResponseSchema:
