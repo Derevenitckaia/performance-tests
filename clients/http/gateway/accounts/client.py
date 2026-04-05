@@ -11,21 +11,23 @@ class GetAccountsQueryDict(TypedDict):
     userId: str
 
 class OpenSavingsAccountRequestDict(TypedDict):
-    """Data for Open account request."""
+    """Data for Open savings account request."""
     userId: str
 
 class OpenDepositAccountRequestDict(TypedDict):
-    """Data for Open account request."""
+    """Data for Open deposit account request."""
     userId: str
 
 class OpenCreditCardAccountRequestDict(TypedDict):
-    """Data for Open account request."""
+    """Data for Open credit card account request."""
     userId: str
 
 class OpenDebitCardAccountRequestDict(TypedDict):
+    """Data for Open debit card account request."""
     userId: str
 
 class AccountDict(TypedDict):
+    """Data structure for account."""
     id: str
     type: str
     cards: list[CardDict]  # Вложенная структура: список карт
@@ -33,22 +35,28 @@ class AccountDict(TypedDict):
     balance: float
 
 class GetAccountsResponseDict(TypedDict):
+    """Data structure for response when getting accounts request."""
     account: AccountDict
 
 class OpenSavingsAccountResponseDict(TypedDict):
+    """Data structure for response when creating savings account request."""
     account: AccountDict
 
 class OpenDebitCardAccountResponseDict(TypedDict):
+    """Data structure for response when creating debit  card account request."""
     account: AccountDict
 
 class OpenCreditCardAccountResponseDict(TypedDict):
+    """Data structure for response when creating credit card account request."""
     account: AccountDict
 
 class OpenDepositAccountResponseDict(TypedDict):
+    """Data structure for response when creating deposit account request."""
     account: AccountDict
 
 
 class AccountsGatewayHttpClient(HTTPClient):
+    """Client for interacting with /api/v1/accounts http-gateway service."""
 
     def get_accounts_api(self, query: GetAccountsQueryDict) -> Response:
         """Gets account details.
@@ -86,26 +94,31 @@ class AccountsGatewayHttpClient(HTTPClient):
         return self.post(url="/api/v1/accounts/open-credit-card-account", json=request)
 
     def get_accounts(self, user_id: str) -> GetAccountsResponseDict:
+        """Gets account."""
         query = GetAccountsQueryDict(userId=user_id)
         response = self.get_accounts_api(query)
         return response.json()
 
     def open_deposit_account(self, user_id: str) -> OpenDepositAccountResponseDict:
+        """Opens deposit account."""
         request = OpenDepositAccountRequestDict(userId=user_id)
         response = self.open_deposit_account_api(request)
         return response.json()
 
     def open_savings_account(self, user_id: str) -> OpenSavingsAccountResponseDict:
+        """Opens savings account."""
         request = OpenSavingsAccountRequestDict(userId=user_id)
         response = self.open_savings_account_api(request)
         return response.json()
 
     def open_debit_card_account(self, user_id: str) -> OpenDebitCardAccountResponseDict:
+        """Opens debit card account."""
         request = OpenDebitCardAccountRequestDict(userId=user_id)
         response = self.open_debit_card_account_api(request)
         return response.json()
 
     def open_credit_card_account(self, user_id: str) -> OpenCreditCardAccountResponseDict:
+        """Opens credit card account."""
         request = OpenCreditCardAccountRequestDict(userId=user_id)
         response = self.open_credit_card_account_api(request)
         return response.json()

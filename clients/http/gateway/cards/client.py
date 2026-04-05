@@ -25,9 +25,11 @@ class CardDict(TypedDict):
     paymentSystem: str
 
 class IssueVirtualCardResponseDict(TypedDict):
+    """Data structure for response when creating issue virtual card request."""
     card: CardDict
 
 class IssuePhysicalCardResponseDict(TypedDict):
+    """Data structure for response when creating issue physical card request."""
     card: CardDict
 
 
