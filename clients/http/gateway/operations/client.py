@@ -1,4 +1,4 @@
-from typing import TypedDict, Literal
+from typing import TypedDict
 
 from httpx import Response, QueryParams
 
