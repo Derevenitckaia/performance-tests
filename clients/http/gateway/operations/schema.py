@@ -4,6 +4,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 
+from tools.fakers import fake
+
 
 class OperationStatus(StrEnum):
     """Operation status."""
@@ -52,8 +54,8 @@ class MakeOperationRequestSchema(BaseModel):
     """Base schema for making an operation request."""
     model_config = ConfigDict(populate_by_name=True)
 
-    status: OperationStatus
-    amount: float
+    status: OperationStatus = Field(default_factory=lambda: fake.enum(OperationStatus))
+    amount: float = Field(default_factory=lambda: fake.amount())
     card_id: str = Field(alias="cardId")
     account_id: str = Field(alias="accountId")
 
@@ -70,7 +72,7 @@ class MakeTopUpOperationResponseSchema(BaseModel):
 
 class MakePurchaseOperationRequestSchema(MakeOperationRequestSchema):
     """Request schema for PURCHASE operation."""
-    category: str
+    category: str = Field(default_factory= lambda: fake.category())
 
 
 class MakePurchaseOperationResponseSchema(BaseModel):
