@@ -55,7 +55,7 @@ class MakeOperationRequestSchema(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     status: OperationStatus = Field(default_factory=lambda: fake.enum(OperationStatus))
-    amount: float = Field(default_factory=lambda: fake.amount())
+    amount: float = Field(default_factory=fake.amount)
     card_id: str = Field(alias="cardId")
     account_id: str = Field(alias="accountId")
 
@@ -72,7 +72,7 @@ class MakeTopUpOperationResponseSchema(BaseModel):
 
 class MakePurchaseOperationRequestSchema(MakeOperationRequestSchema):
     """Request schema for PURCHASE operation."""
-    category: str = Field(default_factory= lambda: fake.category())
+    category: str = Field(default_factory=fake.category)
 
 
 class MakePurchaseOperationResponseSchema(BaseModel):
