@@ -3,6 +3,8 @@ from typing import TypedDict
 from httpx import Response, QueryParams
 
 from clients.http.client import HTTPClient
+from clients.http.gateway.client import build_gateway_http_client
+
 
 class GetOperationDict(TypedDict):
     """Data for get operation."""
@@ -130,5 +132,8 @@ class OperationsGatewayHTTPClient(HTTPClient):
         pass
 
 
+def build_operations_gateway_http_client() -> OperationsGatewayHTTPClient:
+    """Builds an OperationsGatewayHTTPClient instance."""
+    return OperationsGatewayHTTPClient(client=build_gateway_http_client())
 
 
