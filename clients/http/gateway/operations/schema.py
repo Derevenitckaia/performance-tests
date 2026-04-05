@@ -1,5 +1,7 @@
 from datetime import datetime
 from enum import StrEnum
+from typing import Optional
+
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 
@@ -21,25 +23,8 @@ class OperationType(StrEnum):
     BILL_PAYMENT = "BILL_PAYMENT"
     CASH_WITHDRAWAL = "CASH_WITHDRAWAL"
 
-class GetOperationsQuerySchema(BaseModel):
-    """Data for get operations."""
-    accountId: str
-
-class MakeOperationRequestSchema(BaseModel):
-    """Data for make operation request."""
-    model_config = ConfigDict(populate_by_name=True)
-
-    status: OperationStatus
-    amount: float
-    card_id: str = Field(alias="cardId")
-    account_id: str = Field(alias="accountId")
-
-class MakePurchaseOperationRequestSchema(MakeOperationRequestSchema):
-    """Data for make purchase operation request."""
-    category: str
-
 class OperationSchema(BaseModel):
-    """Data for operation."""
+    """Schema for a generic operation."""
     model_config = ConfigDict(populate_by_name=True)
 
     id: str
@@ -47,9 +32,13 @@ class OperationSchema(BaseModel):
     status: OperationStatus
     amount: float
     card_id: str = Field(alias="cardId")
-    category: str
-    created_at: datetime = Field(alias="createdAt")
     account_id: str = Field(alias="accountId")
+    created_at: datetime = Field(alias="createdAt")
+    updated_at: Optional[datetime] = Field(default=None, alias="updatedAt")
+
+class GetOperationsQuerySchema(BaseModel):
+    """Data for get operations."""
+    accountId: str
 
 class GetOperationResponseSchema(BaseModel):
     """Data for get operation response."""
@@ -59,8 +48,84 @@ class GetOperationsResponseSchema(BaseModel):
     """Data for get operations response."""
     operations: list[OperationSchema]
 
-class MakeOperationResponseSchema(BaseModel):
-    """Data for make operation response."""
+
+class MakeOperationRequestSchema(BaseModel):
+    """Base schema for making an operation request."""
+    model_config = ConfigDict(populate_by_name=True)
+
+    status: OperationStatus
+    amount: float
+    card_id: str = Field(alias="cardId")
+    account_id: str = Field(alias="accountId")
+
+
+class MakeTopUpOperationRequestSchema(MakeOperationRequestSchema):
+    """Request schema for TOP_UP operation."""
+    pass
+
+
+class MakeTopUpOperationResponseSchema(BaseModel):
+    """Response schema for TOP_UP operation."""
+    operation: OperationSchema
+
+
+class MakePurchaseOperationRequestSchema(MakeOperationRequestSchema):
+    """Request schema for PURCHASE operation."""
+    category: str
+
+
+class MakePurchaseOperationResponseSchema(BaseModel):
+    """Response schema for PURCHASE operation."""
+    operation: OperationSchema
+
+
+class MakeFeeOperationRequestSchema(MakeOperationRequestSchema):
+    """Request schema for FEE operation."""
+    pass
+
+
+class MakeFeeOperationResponseSchema(BaseModel):
+    """Response schema for FEE operation."""
+    operation: OperationSchema
+
+
+class MakeCashbackOperationRequestSchema(MakeOperationRequestSchema):
+    """Request schema for CASHBACK operation."""
+    pass
+
+
+class MakeCashbackOperationResponseSchema(BaseModel):
+    """Response schema for CASHBACK operation."""
+    operation: OperationSchema
+
+
+class MakeTransferOperationRequestSchema(MakeOperationRequestSchema):
+    """Request schema for TRANSFER operation."""
+    pass
+
+
+class MakeTransferOperationResponseSchema(BaseModel):
+    """Response schema for TRANSFER operation."""
+    operation: OperationSchema
+
+
+class MakeBillPaymentOperationRequestSchema(MakeOperationRequestSchema):
+    """Request schema for BILL_PAYMENT operation."""
+    pass
+
+
+class MakeBillPaymentOperationResponseSchema(BaseModel):
+    """Response schema for BILL_PAYMENT operation."""
+    operation: OperationSchema
+
+
+class MakeCashWithdrawalOperationRequestSchema(MakeOperationRequestSchema):
+    """Request schema for CASH_WITHDRAWAL operation."""
+    pass
+
+
+class MakeCashWithdrawalOperationResponseSchema(BaseModel):
+    """Response schema for CASH_WITHDRAWAL operation."""
     operation: OperationSchema
 
 class OperationReceiptSchema(BaseModel):
