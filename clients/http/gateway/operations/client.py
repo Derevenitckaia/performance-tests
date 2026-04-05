@@ -141,8 +141,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: Account ID
         :return response: Schema with operation data."""
         request = MakeFeeOperationRequestSchema(
-            status=OperationStatus.IN_PROGRESS,
-            amount=100,
             card_id=card_id,
             account_id=account_id
         )
@@ -156,8 +154,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: Account ID
         :return response: Schema with operation data."""
         request = MakeTopUpOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=55.77,
             card_id=card_id,
             account_id=account_id
         )
@@ -171,8 +167,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: Account ID
         :return response: Schema with operation data."""
         request = MakeCashbackOperationRequestSchema(
-            status=OperationStatus.IN_PROGRESS,
-            amount=200,
             card_id=card_id,
             account_id=account_id
         )
@@ -186,8 +180,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: Account ID
         :return response: Schema with operation data."""
         request = MakeTransferOperationRequestSchema(
-            status=OperationStatus.IN_PROGRESS,
-            amount=300,
             card_id=card_id,
             account_id=account_id
         )
@@ -201,11 +193,8 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: Account ID
         :return response: Schema with operation data."""
         request = MakePurchaseOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=101,
             card_id=card_id,
-            account_id=account_id,
-            category="beauty"
+            account_id=account_id
         )
         response = self.make_purchase_operation_api(request)
         return MakePurchaseOperationResponseSchema.model_validate_json(response.text)
@@ -218,8 +207,6 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :param account_id: Account ID
         :return response: Schema with operation data."""
         request = MakeCashWithdrawalOperationRequestSchema(
-            status=OperationStatus.COMPLETED,
-            amount=201,
             card_id=card_id,
             account_id=account_id
         )
