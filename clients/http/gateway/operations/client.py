@@ -1,67 +1,11 @@
-from typing import TypedDict
-
 from httpx import Response, QueryParams
 
 from clients.http.client import HTTPClient
 from clients.http.gateway.client import build_gateway_http_client
+from clients.http.gateway.operations.schema import MakeOperationRequestSchema, MakeOperationResponseSchema, \
+    OperationStatus, MakePurchaseOperationRequestSchema, GetOperationsQuerySchema, GetOperationsSummaryResponseSchema, \
+    GetOperationsResponseSchema, GetOperationResponseSchema, GetOperationsReceiptResponseSchema
 
-
-class GetOperationsQueryDict(TypedDict):
-    """Data for get operations."""
-    accountId: str
-
-class MakeOperationRequestDict(TypedDict):
-    """Data for make operation request."""
-    status: str
-    amount: float
-    cardId: str
-    accountId: str
-
-class MakePurchaseOperationRequestDict(MakeOperationRequestDict):
-    """Data for make purchase operation request."""
-    category: str
-
-class OperationDict(TypedDict):
-    """Data for operation."""
-    id: str
-    type: str
-    status: str
-    amount: float
-    cardId: str
-    category: str
-    createdAt: str
-    accountId: str
-
-class GetOperationResponseDict(TypedDict):
-    """Data for get operation response."""
-    operation: OperationDict
-
-class GetOperationsResponseDict(TypedDict):
-    """Data for get operations response."""
-    operations: list[OperationDict]
-
-class MakeOperationResponseDict(TypedDict):
-    """Data for make operation response."""
-    operation: OperationDict
-
-class OperationReceiptDict(TypedDict):
-    """Data for operation receipt."""
-    url: str
-    document: str
-
-class GetOperationsReceiptResponseDict(TypedDict):
-    """Data for get operation's receipt response."""
-    receipt: OperationReceiptDict
-
-class OperationsSummaryDict(TypedDict):
-    """Data for operation summary."""
-    spentAmount: float
-    receivedAmount: float
-    cashbackAmount: float
-
-class GetOperationsSummaryResponseDict(TypedDict):
-    """Data for get operation summary response."""
-    summary: OperationsSummaryDict
 
 class OperationsGatewayHTTPClient(HTTPClient):
     """Client for interacting with  /api/v1/operations http-gateway service."""
@@ -80,193 +24,202 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return response: The response from server."""
         return self.get(url=f"/api/v1/operations/operation-receipt/{operation_id}")
 
-    def get_operations_api(self, query: GetOperationsQueryDict) -> Response:
+    def get_operations_api(self, query: GetOperationsQuerySchema) -> Response:
         """Gets an information about all operations for an account.
 
-        :param query: Dictionary with the id of the account.
+        :param query: Schema with the id of the account.
         :return response: The response from server."""
-        return self.get(url=f"/api/v1/operations", params=QueryParams(**query))
+        return self.get(url=f"/api/v1/operations",
+                        params=QueryParams(**query.model_dump(by_alias=True)))
 
-    def get_operations_summary_api(self, query: GetOperationsQueryDict) -> Response:
+    def get_operations_summary_api(self, query: GetOperationsQuerySchema) -> Response:
         """Gets an operations' summary for an account.
 
-        :param query: Dictionary with the id of the account.
+        :param query: Schema with the id of the account.
         :return response: The response from server."""
-        return self.get(url=f"/api/v1/operations/operations-summary", params=QueryParams(**query))
+        return self.get(url=f"/api/v1/operations/operations-summary",
+                        params=QueryParams(**query.model_dump(by_alias=True)))
 
-    def make_fee_operation_api(self, request: MakeOperationRequestDict) -> Response:
+    def make_fee_operation_api(self, request: MakeOperationRequestSchema) -> Response:
         """Makes a fee operation request.
 
-        :param request: Dictionary of request data.
+        :param request: Schema of request data.
         :return: Response from server."""
-        return self.post(url="/api/v1/operations/make-fee-operation", json=request)
+        return self.post(url="/api/v1/operations/make-fee-operation",
+                         json=request.model_dump(by_alias=True))
 
-    def make_top_up_operation_api(self, request: MakeOperationRequestDict) -> Response:
+    def make_top_up_operation_api(self, request: MakeOperationRequestSchema) -> Response:
         """Makes a top-up operation request.
 
-        :param request: Dictionary of request data.
+        :param request: Schema of request data.
         :return response: Response from server."""
-        return self.post(url="/api/v1/operations/make-top-up-operation", json=request)
+        return self.post(url="/api/v1/operations/make-top-up-operation",
+                         json=request.model_dump(by_alias=True))
 
-    def make_cashback_operation_api(self, request: MakeOperationRequestDict) -> Response:
+    def make_cashback_operation_api(self, request: MakeOperationRequestSchema) -> Response:
         """Makes a cashback operation request.
 
-        :param request: Dictionary of request data.
+        :param request: Schema of request data.
         :return response: Response from server."""
-        return self.post(url="/api/v1/operations/make-cashback-operation", json=request)
+        return self.post(url="/api/v1/operations/make-cashback-operation",
+                         json=request.model_dump(by_alias=True))
 
-    def make_transfer_operation_api(self, request: MakeOperationRequestDict) -> Response:
+    def make_transfer_operation_api(self, request: MakeOperationRequestSchema) -> Response:
         """Makes a transfer operation request.
 
-        :param request: Dictionary of request data.
+        :param request: Schema of request data.
         :return response: Response from server."""
-        return self.post(url="/api/v1/operations/make-transfer-operation", json=request)
+        return self.post(url="/api/v1/operations/make-transfer-operation",
+                         json=request.model_dump(by_alias=True))
 
-    def make_purchase_operation_api(self, request: MakePurchaseOperationRequestDict) -> Response:
+    def make_purchase_operation_api(self, request: MakePurchaseOperationRequestSchema) -> Response:
         """Makes a purchase operation request.
 
-        :param request: Dictionary of request data.
+        :param request: Schema of request data.
         :return response: Response from server."""
-        return self.post(url="/api/v1/operations/make-purchase-operation", json=request)
+        return self.post(url="/api/v1/operations/make-purchase-operation",
+                         json=request.model_dump(by_alias=True))
 
-    def make_bill_payment_operation_api(self, request: MakeOperationRequestDict) -> Response:
+    def make_bill_payment_operation_api(self, request: MakeOperationRequestSchema) -> Response:
         """Makes a bill payment operation request.
 
-        :param request: Dictionary of request data.
+        :param request: Schema of request data.
         :return response: Response from server."""
-        return self.post(url="/api/v1/operations/make-bill-payment-operation", json=request)
+        return self.post(url="/api/v1/operations/make-bill-payment-operation",
+                         json=request.model_dump(by_alias=True))
 
-    def make_cash_withdrawal_operation_api(self, request: MakeOperationRequestDict) -> Response:
+    def make_cash_withdrawal_operation_api(self, request: MakeOperationRequestSchema) -> Response:
         """Makes a cash withdrawal operation request.
 
-        :param request: Dictionary of request data.
+        :param request: Schema of request data.
         :return response: Response from server."""
-        return self.post(url="/api/v1/operations/make-cash-withdrawal-operation", json=request)
+        return self.post(url="/api/v1/operations/make-cash-withdrawal-operation",
+                         json=request.model_dump(by_alias=True))
 
-    def get_operation(self, operation_id):
+    def get_operation(self, operation_id) -> GetOperationResponseSchema:
         """Gets operations' data.
 
         :param operation_id: Operation ID
-        :return response: Dictionary with operation data."""
+        :return response: Schema with operation data."""
         response = self.get_operations_api(operation_id)
-        return response.json()
+        return GetOperationResponseSchema.model_validate_json(response.text)
 
-    def get_operation_receipt(self, operation_id):
+    def get_operation_receipt(self, operation_id) -> GetOperationsReceiptResponseSchema:
         """Gets operations' receipt.
 
         :param operation_id: Operation ID
-        :return response: Dictionary with receipt data."""
+        :return response: Schema with receipt data."""
         response = self.get_operation_receipt_api(operation_id)
-        return response.json()
+        return GetOperationsReceiptResponseSchema.model_validate_json(response.text)
 
-    def get_operations(self, account_id: str) -> GetOperationsResponseDict:
+    def get_operations(self, account_id: str) -> GetOperationsResponseSchema:
         """Gets operations' data.
 
         :param account_id: Account ID
-        :return response: Dictionary with operations data."""
-        query = GetOperationsQueryDict(accountId=account_id)
+        :return response: Schema with operations data."""
+        query = GetOperationsQuerySchema(account_id=account_id)
         response = self.get_operations_api(query)
-        return response.json()
+        return GetOperationsResponseSchema.model_validate_json(response.text)
 
-    def get_operations_summary(self, account_id: str) -> GetOperationsSummaryResponseDict:
+    def get_operations_summary(self, account_id: str) -> GetOperationsSummaryResponseSchema:
         """Gets operations' summary.
 
         :param account_id: Account ID
-        :return response: Dictionary with operations summary data."""
-        query = GetOperationsQueryDict(accountId=account_id)
+        :return response: Schema with operations summary data."""
+        query = GetOperationsQuerySchema(account_id=account_id)
         response = self.get_operations_summary_api(query)
-        return response.json()
+        return GetOperationsSummaryResponseSchema.model_validate_json(response.text)
 
-    def make_fee_operation(self, card_id: str, account_id: str) -> MakeOperationResponseDict:
+    def make_fee_operation(self, card_id: str, account_id: str) -> MakeOperationResponseSchema:
         """Makes a fee operation request.
 
         :param card_id: Card ID
         :param account_id: Account ID
-        :return response: Dictionary with operation data."""
-        request = MakeOperationRequestDict(
-            status="IN_PROGRESS",
+        :return response: Schema with operation data."""
+        request = MakeOperationRequestSchema(
+            status=OperationStatus.IN_PROGRESS,
             amount=100,
-            cardId=card_id,
-            accountId=account_id
+            card_id=card_id,
+            account_id=account_id
         )
         response = self.make_fee_operation_api(request)
-        return response.json()
+        return MakeOperationResponseSchema.model_validate_json(response.text)
 
-    def make_top_up_operation(self, card_id: str, account_id: str) -> MakeOperationResponseDict:
+    def make_top_up_operation(self, card_id: str, account_id: str) -> MakeOperationResponseSchema:
         """Makes a top-up operation request.
 
         :param card_id: Card ID
         :param account_id: Account ID
-        :return response: Dictionary with operation data."""
-        request = MakeOperationRequestDict(
-            status="COMPLETED",
+        :return response: Schema with operation data."""
+        request = MakeOperationRequestSchema(
+            status=OperationStatus.COMPLETED,
             amount=55.77,
-            cardId=card_id,
-            accountId=account_id
+            card_id=card_id,
+            account_id=account_id
         )
         response = self.make_top_up_operation_api(request)
-        return response.json()
+        return MakeOperationResponseSchema.model_validate_json(response.text)
 
-    def make_cashback_operation(self, card_id: str, account_id: str) -> MakeOperationResponseDict:
+    def make_cashback_operation(self, card_id: str, account_id: str) -> MakeOperationResponseSchema:
         """Makes a cashback operation request.
 
         :param card_id: Card ID
         :param account_id: Account ID
-        :return response: Dictionary with operation data."""
-        request = MakeOperationRequestDict(
-            status="IN_PROGRESS",
+        :return response: Schema with operation data."""
+        request = MakeOperationRequestSchema(
+            status=OperationStatus.IN_PROGRESS,
             amount=200,
-            cardId=card_id,
-            accountId=account_id
+            card_id=card_id,
+            account_id=account_id
         )
         response = self.make_cashback_operation_api(request)
-        return response.json()
+        return MakeOperationResponseSchema.model_validate_json(response.text)
 
-    def make_transfer_operation(self, card_id: str, account_id: str) -> MakeOperationResponseDict:
+    def make_transfer_operation(self, card_id: str, account_id: str) -> MakeOperationResponseSchema:
         """Makes a transfer operation request.
 
         :param card_id: Card ID
         :param account_id: Account ID
-        :return response: Dictionary with operation data."""
-        request = MakeOperationRequestDict(
-            status="IN_PROGRESS",
+        :return response: Schema with operation data."""
+        request = MakeOperationRequestSchema(
+            status=OperationStatus.IN_PROGRESS,
             amount=300,
-            cardId=card_id,
-            accountId=account_id
+            card_id=card_id,
+            account_id=account_id
         )
         response = self.make_transfer_operation_api(request)
-        return response.json()
+        return MakeOperationResponseSchema.model_validate_json(response.text)
 
-    def make_purchase_operation(self, card_id: str, account_id: str) -> MakeOperationResponseDict:
+    def make_purchase_operation(self, card_id: str, account_id: str) -> MakeOperationResponseSchema:
         """Makes a purchase operation request.
 
         :param card_id: Card ID
         :param account_id: Account ID
-        :return response: Dictionary with operation data."""
-        request = MakePurchaseOperationRequestDict(
-            status="COMPLETED",
+        :return response: Schema with operation data."""
+        request = MakePurchaseOperationRequestSchema(
+            status=OperationStatus.COMPLETED,
             amount=101,
-            cardId=card_id,
-            accountId=account_id,
+            card_id=card_id,
+            account_id=account_id,
             category="beauty"
         )
         response = self.make_purchase_operation_api(request)
-        return response.json()
+        return MakeOperationResponseSchema.model_validate_json(response.text)
 
-    def make_cash_withdrawal_operation(self, card_id: str, account_id: str) -> MakeOperationResponseDict:
+    def make_cash_withdrawal_operation(self, card_id: str, account_id: str) -> MakeOperationResponseSchema:
         """Makes a cash withdrawal operation request.
 
         :param card_id: Card ID
         :param account_id: Account ID
-        :return response: Dictionary with operation data."""
-        request = MakeOperationRequestDict(
-            status="COMPLETED",
+        :return response: Schema with operation data."""
+        request = MakeOperationRequestSchema(
+            status=OperationStatus.COMPLETED,
             amount=201,
-            cardId=card_id,
-            accountId=account_id
+            card_id=card_id,
+            account_id=account_id
         )
         response = self.make_cash_withdrawal_operation_api(request)
-        return response.json()
+        return MakeOperationResponseSchema.model_validate_json(response.text)
 
 
 def build_operations_gateway_http_client() -> OperationsGatewayHTTPClient:

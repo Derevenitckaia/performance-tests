@@ -3,125 +3,80 @@ from typing import TypedDict
 from httpx import Response, QueryParams
 
 from clients.http.client import HTTPClient
-from clients.http.gateway.cards.client import CardDict
+from clients.http.gateway.accounts.schema import OpenCreditCardAccountRequestSchema, \
+    OpenDebitCardAccountRequestSchema, \
+    OpenDebitCardAccountResponseSchema, OpenCreditCardAccountResponseSchema, OpenSavingsAccountRequestSchema, \
+    OpenSavingsAccountResponseSchema, OpenDepositAccountRequestSchema, OpenDepositAccountResponseSchema, \
+    GetAccountsQuerySchema, GetAccountsResponseSchema
 from clients.http.gateway.client import build_gateway_http_client
-
-class GetAccountsQueryDict(TypedDict):
-    """Data for Get account request."""
-    userId: str
-
-class OpenSavingsAccountRequestDict(TypedDict):
-    """Data for Open savings account request."""
-    userId: str
-
-class OpenDepositAccountRequestDict(TypedDict):
-    """Data for Open deposit account request."""
-    userId: str
-
-class OpenCreditCardAccountRequestDict(TypedDict):
-    """Data for Open credit card account request."""
-    userId: str
-
-class OpenDebitCardAccountRequestDict(TypedDict):
-    """Data for Open debit card account request."""
-    userId: str
-
-class AccountDict(TypedDict):
-    """Data structure for account."""
-    id: str
-    type: str
-    cards: list[CardDict]  # Вложенная структура: список карт
-    status: str
-    balance: float
-
-class GetAccountsResponseDict(TypedDict):
-    """Data structure for response when getting accounts request."""
-    account: AccountDict
-
-class OpenSavingsAccountResponseDict(TypedDict):
-    """Data structure for response when creating savings account request."""
-    account: AccountDict
-
-class OpenDebitCardAccountResponseDict(TypedDict):
-    """Data structure for response when creating debit  card account request."""
-    account: AccountDict
-
-class OpenCreditCardAccountResponseDict(TypedDict):
-    """Data structure for response when creating credit card account request."""
-    account: AccountDict
-
-class OpenDepositAccountResponseDict(TypedDict):
-    """Data structure for response when creating deposit account request."""
-    account: AccountDict
-
 
 class AccountsGatewayHttpClient(HTTPClient):
     """Client for interacting with /api/v1/accounts http-gateway service."""
 
-    def get_accounts_api(self, query: GetAccountsQueryDict) -> Response:
+    def get_accounts_api(self, query: GetAccountsQuerySchema) -> Response:
         """Gets account details.
 
-        :param query: GetAccountsQueryDict
+        :param query: GetAccountsQuerySchema
         :return: Response from server"""
-        return self.get(url="/api/v1/accounts", params=QueryParams(**query))
+        return self.get(url="/api/v1/accounts", params=QueryParams(**query.model_dump(by_alias=True)))
 
-    def open_deposit_account_api(self, request: OpenDepositAccountRequestDict) -> Response:
+    def open_deposit_account_api(self, request: OpenDepositAccountRequestSchema) -> Response:
         """Opens deposit account.
 
-        :param request: OpenAccountRequestDict
+        :param request: OpenAccountRequestSchema
         :return: Response from server"""
-        return self.post(url="/api/v1/accounts/open-deposit-account", json=request)
+        return self.post(url="/api/v1/accounts/open-deposit-account", json=request.model_dump(by_alias=True))
 
-    def open_savings_account_api(self, request: OpenSavingsAccountRequestDict) -> Response:
+    def open_savings_account_api(self, request: OpenSavingsAccountRequestSchema) -> Response:
         """Opens savings account.
 
-        :param request: OpenAccountRequestDict
+        :param request: OpenAccountRequestSchema
         :return: Response from server"""
-        return self.post(url="/api/v1/accounts/open-savings-account", json=request)
+        return self.post(url="/api/v1/accounts/open-savings-account", json=request.model_dump(by_alias=True))
 
-    def open_debit_card_account_api(self, request: OpenDebitCardAccountRequestDict) -> Response:
+    def open_debit_card_account_api(self, request: OpenDebitCardAccountRequestSchema) -> Response:
         """Opens debit card account.
 
-        :param request: OpenAccountRequestDict
+        :param request: OpenAccountRequestSchema
         :return: Response from server"""
-        return self.post(url="/api/v1/accounts/open-debit-card-account", json=request)
+        return self.post(url="/api/v1/accounts/open-debit-card-account", json=request.model_dump(by_alias=True))
 
-    def open_credit_card_account_api(self, request: OpenCreditCardAccountRequestDict) -> Response:
+    def open_credit_card_account_api(self, request: OpenCreditCardAccountRequestSchema) -> Response:
         """Opens credit card account.
 
-        :param request: OpenAccountRequestDict
+        :param request: OpenAccountRequestSchema
         :return: Response from server"""
-        return self.post(url="/api/v1/accounts/open-credit-card-account", json=request)
+        return self.post(url="/api/v1/accounts/open-credit-card-account", json=request.model_dump(by_alias=True))
 
-    def get_accounts(self, user_id: str) -> GetAccountsResponseDict:
+    def get_accounts(self, user_id: str) -> GetAccountsResponseSchema:
         """Gets account."""
-        query = GetAccountsQueryDict(userId=user_id)
+        query = GetAccountsQuerySchema(user_id=user_id)
         response = self.get_accounts_api(query)
-        return response.json()
+        return GetAccountsResponseSchema.model_validate_json(response.text)
 
-    def open_deposit_account(self, user_id: str) -> OpenDepositAccountResponseDict:
+    def open_deposit_account(self, user_id: str) -> OpenDepositAccountResponseSchema:
         """Opens deposit account."""
-        request = OpenDepositAccountRequestDict(userId=user_id)
+        request = OpenDepositAccountRequestSchema(user_id=user_id)
         response = self.open_deposit_account_api(request)
-        return response.json()
+        return OpenDepositAccountResponseSchema.model_validate_json(response.text)
 
-    def open_savings_account(self, user_id: str) -> OpenSavingsAccountResponseDict:
+    def open_savings_account(self, user_id: str) -> OpenSavingsAccountResponseSchema:
         """Opens savings account."""
-        request = OpenSavingsAccountRequestDict(userId=user_id)
+        request = OpenSavingsAccountRequestSchema(user_id=user_id)
         response = self.open_savings_account_api(request)
-        return response.json()
+        return OpenSavingsAccountResponseSchema.model_validate_json(response.text)
 
-    def open_debit_card_account(self, user_id: str) -> OpenDebitCardAccountResponseDict:
+    def open_debit_card_account(self, user_id: str) -> OpenDebitCardAccountResponseSchema:
         """Opens debit card account."""
-        request = OpenDebitCardAccountRequestDict(userId=user_id)
+        request = OpenDebitCardAccountRequestSchema(user_id=user_id)
         response = self.open_debit_card_account_api(request)
-        return response.json()
+        return OpenDebitCardAccountResponseSchema.model_validate_json(response.text)
 
-    def open_credit_card_account(self, user_id: str) -> OpenCreditCardAccountResponseDict:
+    def open_credit_card_account(self, user_id: str) -> OpenCreditCardAccountResponseSchema:
         """Opens credit card account."""
-        request = OpenCreditCardAccountRequestDict(userId=user_id)
+        request = OpenCreditCardAccountRequestSchema(user_id=user_id)
         response = self.open_credit_card_account_api(request)
-        return response.json()
+        return OpenCreditCardAccountResponseSchema.model_validate_json(response.text)
 
 def build_accounts_gateway_http_client() -> AccountsGatewayHttpClient:
     """Builds AccountsGatewayHttpClient instance."""
