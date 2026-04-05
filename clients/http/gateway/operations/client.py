@@ -99,6 +99,36 @@ class OperationsGatewayHTTPClient(HTTPClient):
         :return response: Response from server."""
         return self.post(url="/api/v1/operations/make-cash-withdrawal-operation", json=request)
 
+    def get_operation(self, operation_id):
+        return self.get_operation_api(operation_id)
+
+    def get_operation_receipt(self, operation_id):
+        return self.get_operation_receipt_api(operation_id)
+
+    def get_operations(self, query):
+        return self.get_operations_api(query)
+
+    def get_operations_summary(self, query):
+        return self.get_operations_summary_api(query)
+
+    def make_fee_operation(self):
+        return
+
+    def make_top_up_operation(self):
+        pass
+
+    def make_cashback_operation(self):
+        pass
+
+    def make_transfer_operation(self):
+        pass
+
+    def make_purchase_operation(self):
+        pass
+
+    def make_cash_withdrawal_operation(self):
+        pass
+
 
 
 
