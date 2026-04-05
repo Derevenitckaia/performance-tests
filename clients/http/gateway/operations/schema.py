@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
@@ -48,8 +48,7 @@ class OperationSchema(BaseModel):
     amount: float
     card_id: str = Field(alias="cardId")
     category: str
-    created_at: date = Field(alias="createdAt")
-    updated_at: date = Field(alias="updatedAt")
+    created_at: datetime = Field(alias="createdAt")
     account_id: str = Field(alias="accountId")
 
 class GetOperationResponseSchema(BaseModel):
