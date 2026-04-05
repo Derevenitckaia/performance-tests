@@ -1,3 +1,4 @@
+from datetime import date
 from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl
@@ -11,6 +12,7 @@ class OperationStatus(StrEnum):
     UNSPECIFIED = "UNSPECIFIED"
 
 class OperationType(StrEnum):
+    """Operation type."""
     FEE = "FEE"
     TOP_UP = "TOP_UP"
     PURCHASE = "PURCHASE"
@@ -46,8 +48,9 @@ class OperationSchema(BaseModel):
     amount: float
     card_id: str = Field(alias="cardId")
     category: str
-    createdAt: str
-    accountId: str
+    created_at: date = Field(alias="createdAt")
+    updated_at: date = Field(alias="updatedAt")
+    account_id: str = Field(alias="accountId")
 
 class GetOperationResponseSchema(BaseModel):
     """Data for get operation response."""
