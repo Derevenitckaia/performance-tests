@@ -8,12 +8,12 @@ user_data = user_gateway_http_client.create_user()
 print(f"Create user response: {user_data}")
 # Step 2. Open credit card account
 accounts_gateway_http_client = build_accounts_gateway_http_client()
-credit_card_account_data = accounts_gateway_http_client.open_credit_card_account(user_id=user_data["user"]["id"])
+credit_card_account_data = accounts_gateway_http_client.open_credit_card_account(user_id=user_data.user.id)
 print(f"Open credit card account response: {credit_card_account_data}")
 # Step 3. Get tariff document
 documents_gateway_http_client = build_documents_gateway_http_client()
-tariff_document_data = documents_gateway_http_client.get_tariff_document(account_id=credit_card_account_data["account"]["id"])
+tariff_document_data = documents_gateway_http_client.get_tariff_document(account_id=credit_card_account_data.account.id)
 print(f"Get tariff document response: {tariff_document_data}")
 # Step 4. Get contract document
-contract_document_data = documents_gateway_http_client.get_contract_document(account_id=credit_card_account_data["account"]["id"])
+contract_document_data = documents_gateway_http_client.get_contract_document(account_id=credit_card_account_data.account.id)
 print(f"Get contract document response: {contract_document_data}")
